@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - Administração</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --bg-principal: #020617;
+            --bg-card: rgba(15, 23, 42, 0.45);
+            --border-card: rgba(255, 255, 255, 0.08);
+            --texto-p: #f8fafc;
+            --texto-s: #94a3b8;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.35);
+            --emerald: #10b981;
+            --emerald-glow: rgba(16, 185, 129, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            color: var(--texto-p);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Efeitos de luz no fundo (Glows) */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: rgba(59, 130, 246, 0.15);
+            filter: blur(130px);
+            top: 15%;
+            left: 20%;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: rgba(16, 185, 129, 0.12);
+            filter: blur(130px);
+            bottom: 15%;
+            right: 20%;
+            pointer-events: none;
+        }
+
+        /* Container Central */
+        .painel-container {
+            position: relative;
+            z-index: 10;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-card);
+            border-radius: 24px;
+            padding: 60px 40px;
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Título do Painel */
+        .painel-header {
+            margin-bottom: 40px;
+        }
+
+        .painel-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .painel-header p {
+            color: var(--texto-s);
+            font-size: 14px;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Área dos Botões */
+        .buttons-group {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .btn-premium {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            height: 140px;
+            padding: 20px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        /* Botão 1 - Editar Perfil (Azul) */
+        .btn-editar {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 25px -5px var(--primary-glow);
+        }
+
+        .btn-editar:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 35px var(--primary-glow);
+            filter: brightness(1.1);
+        }
+
+        /* Botão 2 - Cadastrar (Verde) */
+        .btn-cadastrar {
+            background: linear-gradient(135deg, #059669, #047857);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 25px -5px var(--emerald-glow);
+        }
+
+        .btn-cadastrar:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 35px var(--emerald-glow);
+            filter: brightness(1.1);
+        }
+
+        /* Ícones SVG internos */
+        .btn-premium svg {
+            width: 32px;
+            height: 32px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-premium:hover svg {
+            transform: scale(1.15);
+        }
+
+        /* Subtítulo interno dos botões */
+        .btn-desc {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: none;
+            letter-spacing: 0px;
+            opacity: 0.75;
+        }
+
+        /* Responsividade para Celular */
+        @media (max-width: 520px) {
+            .painel-container {
+                padding: 40px 20px;
+            }
+
+            .buttons-group {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .btn-premium {
+                height: 120px;
+            }
+            
+            .painel-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="painel-container">
+        <header class="painel-header">
+            <h1>Painel Administrativo</h1>
+            <p>Selecione a operação desejada para prosseguir</p>
+        </header>
+
+        <div class="buttons-group">
+            <a href="Editar-Site-Ely.html" class="btn-premium btn-editar" onclick="navegar('editar')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span>Editar Site</span>               
+            </a>
+
+            <a href="#" class="btn-premium btn-cadastrar" onclick="navegar('cadastrar')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                </svg>
+                <span>FATURAMENTOS</span>
+                <span class="btn-desc">Adicionar novo Cliente</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function navegar(opcao) {
+            let titulo = opcao === 'editar' ? "Editar Site" : "Lista de Agendamento";
+            let url = opcao === 'editar' ? "Esitar-Site-Manicure.html" : "organizar-horario.html";
+
+            Swal.fire({
+                title: 'Redirecionando...',
+                html: `Acessando: <b>${titulo}</b>`,
+                icon: 'info',
+                background: '#0f172a', /* Cor combinando com seus cards */
+                color: '#f8fafc',       /* Texto claro */
+                showConfirmButton: false,
+                timer: 1500,           /* Tempo do alerta (1.5 segundos) */
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            }).then(() => {
+                window.location.href = url;
+            });
+        }
+    </script>
+</body>
+</html>
