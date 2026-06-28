@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="Ml-RtN5RZNQHqM5gfCmd6bJERsqGsYb4qAmnztnx6lA" />
-    <title>PDV - Loja de Bolos</title>
+    <title>PDV</title>
     <style>
         :root {
             --primary: #ff85a2;
@@ -409,6 +409,45 @@
             <button type="submit" class="btn-modal-save">Salvar Produto na Planilha</button>
         </form>
     </div>
+    
+    
+    <div id="modalProduto300" class="modal-pdv">
+        <div class="modal-header">
+            <h2>Novo Produto 300 até 399</h2>
+            <button class="btn-modal-close" onclick="fecharModal300()">Fechar</button>
+        </div>
+        <form class="modal-form" id="productForm300">
+            <label>ID do Produto (Permitido 300 a 399):</label>
+            <input type="number" id="editId300" min="300" max="399" placeholder="Ex: 301" required>
+            
+            <label>URL da Imagem:</label>
+            <input type="text" id="imgUrl300" placeholder="https://linkdaimagem.com/foto.jpg" required>
+
+            <label>Nome do Produto:</label>
+            <input type="text" id="productName300" placeholder="Ex: Bolo de Cenoura Especial" required>
+
+            <label>Valor:</label>
+            <input type="text" id="productValue300" placeholder="Ex: R$ 50,00" required>
+
+            <label>Ingredientes:</label>
+            <input type="text" id="productIngredients300" placeholder="Ex: Trigo, Ovos, Leite..." required>
+           
+            <label>Campo Coluna H:</label>
+            <input type="text" id="colunaH" data-coluna="H" placeholder="Texto para coluna H">
+
+            <label>Campo Coluna I:</label>
+            <input type="text" id="colunaI" data-coluna="I" placeholder="Texto para coluna I">
+
+            <div id="containerCamposDinamicos" style="display: flex; flex-direction: column; gap: 20px;"></div>
+
+            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                <button type="button" onclick="adicionarMaisCampos()" style="background: #4caf50; color: white; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(76,175,80,0.3); font-weight: bold;">+</button>
+            </div>
+
+            <button type="submit" class="btn-modal-save" style="margin-top: 20px;">Salvar Produto na Planilha</button>
+        </form>
+    </div>
+
 
     <div id="pdv-content">
         <a href="Hospedagem-img.html" target="_blank" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #ffffff; text-decoration: none; font-family: sans-serif; font-size: 16px; font-weight: bold; border-radius: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.2s;">
@@ -516,20 +555,20 @@
             `;
         }
 
-   function renderizarTodosCarrosseis() {
+        function renderizarTodosCarrosseis() {
             const track1 = document.getElementById('carousel1');
             const track2 = document.getElementById('carousel2');
             const track3 = document.getElementById('carousel3');
-            const track4 = document.getElementById('carousel4'); // <-- ADICIONADO
+            const track4 = document.getElementById('carousel4');
 
-            track1.innerHTML = ""; track2.innerHTML = ""; track3.innerHTML = ""; track4.innerHTML = ""; // <-- ADICIONADO track4
+            track1.innerHTML = ""; track2.innerHTML = ""; track3.innerHTML = ""; track4.innerHTML = "";
 
             listaProdutos.forEach(p => {
                 const html = createCardHTML(p.id, p.nome, p.preco, p.img);
                 if (p.id >= 2000 && p.id <= 2999) track1.innerHTML += html;
                 else if (p.id >= 100 && p.id <= 199) track2.innerHTML += html;
                 else if (p.id >= 200 && p.id <= 299) track3.innerHTML += html;
-                else if (p.id >= 300 && p.id <= 399) track4.innerHTML += html; // <-- ADICIONADO
+                else if (p.id >= 300 && p.id <= 399) track4.innerHTML += html;
             });
         }
 
@@ -555,13 +594,24 @@
         }
 
         function abrirModalEditar(id, nome, preco, img) {
-            document.getElementById('modalTitle').innerText = "Editar Produto";
             originalId = id; 
-            document.getElementById('editId').value = id;
-            document.getElementById('imgUrl').value = img;
-            document.getElementById('productName').value = nome;
-            document.getElementById('productValue').value = preco;
-            document.getElementById('modalProduto').style.display = 'block';
+            
+            // Se o ID for entre 300 e 399, redireciona para o modal especial 300
+            if (id >= 300 && id <= 399) {
+                document.getElementById('editId300').value = id;
+                document.getElementById('imgUrl300').value = img;
+                document.getElementById('productName300').value = nome;
+                document.getElementById('productValue300').value = preco;
+                document.getElementById('modalProduto300').style.display = 'block';
+            } else {
+                // Caso contrário, abre o modal padrão
+                document.getElementById('modalTitle').innerText = "Editar Produto";
+                document.getElementById('editId').value = id;
+                document.getElementById('imgUrl').value = img;
+                document.getElementById('productName').value = nome;
+                document.getElementById('productValue').value = preco;
+                document.getElementById('modalProduto').style.display = 'block';
+            }
         }
 
         function fecharModal() {
@@ -569,16 +619,32 @@
         }
 
         function excluirProduto(id) {
-            if(confirm("Deseja realmente excluir o produto ID " + id + " da planilha?")) {
-                const formData = new FormData();
-                formData.append('entry.1866112254', id);
-                formData.append('entry.1560909282', 'EXCLUIR');
-                fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData }).then(() => {
-                    alert("Solicitação de exclusão enviada!");
-                    listaProdutos = listaProdutos.filter(p => p.id !== id);
-                    salvarLocal();
-                    renderizarTodosCarrosseis();
-                });
+            if(confirm("Deseja realmente excluir o produto ID " + id + "?")) {
+                
+                if (id >= 300 && id <= 399) {
+                    const formData = new FormData();
+                    
+                    formData.append('entry.1866112254', id);        // ID do produto a ser apagado
+                    formData.append('entry.1560909282', 'EXCLUIR');  // Comando de exclusão na coluna correta
+                    
+                    fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData }).then(() => {
+                        alert("Solicitação de exclusão enviada para a planilha via Google Forms!");
+                        listaProdutos = listaProdutos.filter(p => p.id !== id);
+                        salvarLocal();
+                        renderizarTodosCarrosseis();
+                    });
+                } else {
+                    // Comportamento padrão antigo para os outros produtos via Google Forms original
+                    const formData = new FormData();
+                    formData.append('entry.1866112254', id);
+                    formData.append('entry.1560909282', 'EXCLUIR');
+                    fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData }).then(() => {
+                        alert("Solicitação de exclusão enviada!");
+                        listaProdutos = listaProdutos.filter(p => p.id !== id);
+                        salvarLocal();
+                        renderizarTodosCarrosseis();
+                    });
+                }
             }
         }
 
@@ -643,7 +709,130 @@
         window.onload = () => {
             renderizarTodosCarrosseis();
         };
-               
+    
+        // --- Lógica para o Modal 300 a 399 e Campos Dinâmicos ---
+        let timeoutId = null;
+        let proximaLetraAscii = 74; // Código ASCII para 'J'
+
+        // Detecta quando digita no ID do primeiro modal
+        document.getElementById('editId').addEventListener('input', function() {
+            clearTimeout(timeoutId);
+            const valor = parseInt(this.value);
+
+            if (valor >= 300 && valor <= 399) {
+                timeoutId = setTimeout(() => {
+                    fecharModal(); // Fecha o modal padrão
+                    abrirModal300(valor); // Abre o novo modal carregando o ID digitado
+                }, 10000); // 10 segundos
+            }
+        });
+
+        function abrirModal300(idPreenchido) {
+            document.getElementById('productForm300').reset();
+            document.getElementById('containerCamposDinamicos').innerHTML = '';
+            proximaLetraAscii = 74; // Reinicia no J
+            
+            document.getElementById('editId300').value = idPreenchido;
+            document.getElementById('modalProduto300').style.display = 'block';
+        }
+
+        function fecharModal300() {
+            document.getElementById('modalProduto300').style.display = 'none';
+        }
+
+        // Cria dinamicamente 2 campos mapeando as colunas subsequentes (J, K, L, M...) até o Z
+        function adicionarMaisCampos() {
+            if (proximaLetraAscii > 90) { // 90 é o código do 'Z'
+                alert("Limite de colunas (Z) atingido!");
+                return;
+            }
+
+            const container = document.getElementById('containerCamposDinamicos');
+
+            for (let i = 0; i < 2; i++) {
+                if (proximaLetraAscii <= 90) {
+                    const letra = String.fromCharCode(proximaLetraAscii);
+                    
+                    const label = document.createElement('label');
+                    label.innerText = `Campo Coluna ${letra}:`;
+                    
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.setAttribute('data-coluna', letra);
+                    input.placeholder = `Texto para coluna ${letra}`;
+
+                    container.appendChild(label);
+                    container.appendChild(input);
+                    
+                    proximaLetraAscii++;
+                }
+            }
+        }
+
+        document.getElementById('productForm300').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Agora usa a MESMA URL que os outros produtos para enviar ao mesmo formulário
+            const FORM_URL_PRODUTOS = FORM_URL;
+
+            const id = parseInt(document.getElementById('editId300').value);
+            const img = document.getElementById('imgUrl300').value;
+            const nome = document.getElementById('productName300').value;
+            const preco = document.getElementById('productValue300').value;
+            const ingredientes = document.getElementById('productIngredients300').value;
+
+            const formData = new FormData();
+            
+            // Mapeamento dos Entrys atualizados conforme os novos dados fornecidos por você
+            formData.append('entry.1866112254', id);                             // ID do Produto
+            formData.append('entry.1956330986', img);                            // URL da Imagem
+            formData.append('entry.872882549', preco);                          // Valor do produto
+            formData.append('entry.1807921197', nome);                           // Nome do Produto
+            formData.append('entry.1560909282', originalId ? 'EDITAR' : 'CRIAR'); // Ação (EDITAR/CRIAR)
+            formData.append('entry.1259153024', ingredientes);                    // Ingredientes
+            
+            // Campos fixos H e I mapeados com os novos entrys corretos
+            const txtH = document.getElementById('colunaH').value;
+            const txtI = document.getElementById('colunaI').value;
+            formData.append('entry.624045744', txtH);                            // Campo Coluna H
+            formData.append('entry.1481139913', txtI);                           // Campo Coluna I
+
+            // Mapeamento dinâmico reestruturado do J ao Z com as suas novas chaves fornecidas
+            const entrysDinamicos = {
+                'J': 'entry.1184409737', 'K': 'entry.1033348781', 
+                'M': 'entry.430871606',  'N': 'entry.274630899',  'O': 'entry.1414667702',
+                'P': 'entry.1890081399', 'Q': 'entry.782446280',  'R': 'entry.1160422079',
+                'S': 'entry.132855352',  'T': 'entry.1563940000', 'U': 'entry.784549084',
+                'V': 'entry.155546940',  'W': 'entry.1678753389', 'X': 'entry.1076424939',
+                'Y': 'entry.176043004',  'Z': 'entry.1289918465'
+            };
+
+            // Pega apenas os campos criados dinamicamente para não conflitar com H e I
+            const camposDinamicos = document.getElementById('containerCamposDinamicos').querySelectorAll('[data-coluna]');
+            camposDinamicos.forEach(campo => {
+                const letra = campo.getAttribute('data-coluna');
+                if (entrysDinamicos[letra]) {
+                    formData.append(entrysDinamicos[letra], campo.value);
+                }
+            });
+
+            // Envia via POST diretamente para o seu formulário ativo
+            fetch(FORM_URL_PRODUTOS, { method: 'POST', mode: 'no-cors', body: formData })
+            .then(() => {
+                alert("Dados enviados com sucesso para o Google Forms!");
+                
+                if(originalId) {
+                    listaProdutos = listaProdutos.filter(p => p.id !== originalId);
+                }
+                
+                listaProdutos.push({ id, nome, preco, img });
+                salvarLocal();
+                renderizarTodosCarrosseis();
+                fecharModal300();
+            })
+            .catch(err => alert('Erro ao enviar dados para o Google Forms: ' + err));
+        });
+            
     </script>
 </body>
 </html>
