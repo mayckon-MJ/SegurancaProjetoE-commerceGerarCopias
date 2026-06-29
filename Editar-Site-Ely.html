@@ -5,23 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="Ml-RtN5RZNQHqM5gfCmd6bJERsqGsYb4qAmnztnx6lA" />
-    <title>PDV</title>
+    <title>PDV - Sistema de Gerenciamento Profissional</title>
     <style>
         :root {
-            --primary: #ff85a2;
-            --secondary: #fce4ec;
-            --accent: #ff4081;
-            --dark: #333;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #e2e8f0;
+            --accent: #3b82f6;
+            --dark: #1e293b;
+            --light-bg: #f8fafc;
             --white: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body { 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background: #fdf2f5; 
-            margin: 0; 
-            padding: 15px; 
+            background: var(--light-bg); 
+            padding: 20px; 
             color: var(--dark);
         }
 
@@ -29,13 +32,14 @@
         .header-controls {
             background: var(--white);
             padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(255, 133, 162, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             margin-bottom: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
             align-items: center;
+            border: 1px solid rgba(226, 232, 240, 0.8);
         }
 
         @media (min-width: 768px) {
@@ -48,168 +52,201 @@
             font-weight: bold;
             color: white;
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: inline-block;
+            letter-spacing: 0.5px;
         }
 
-        .status-open { background: #4caf50; box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3); }
-        .status-closed { background: #f44336; box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3); }
+        .status-open { background: var(--success); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+        .status-closed { background: var(--danger); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
 
         .time-editor { 
             display: flex; 
-            gap: 10px; 
+            gap: 12px; 
             align-items: center; 
             flex-wrap: wrap; 
             justify-content: center;
         }
 
+        .time-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .time-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+
         input[type="time"] { 
-            padding: 8px; 
-            border: 2px solid var(--secondary); 
+            padding: 8px 12px; 
+            border: 1px solid var(--secondary); 
             border-radius: 8px; 
             outline: none;
+            font-family: inherit;
+            color: var(--dark);
+            background: var(--light-bg);
+        }
+        
+        input[type="time"]:focus {
+            border-color: var(--primary);
         }
 
         /* Botão de Adicionar (+) */
         .add-main-container {
             display: flex;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .btn-main-add {
-            background: var(--accent);
+            background: var(--primary);
             color: white;
             border: none;
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
-            font-size: 24px;
+            font-size: 26px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s;
+            transition: all 0.2s ease;
         }
 
-        .btn-main-add:hover { transform: scale(1.1); }
+        .btn-main-add:hover { transform: scale(1.05); background: var(--primary-dark); }
 
         /* Carrossel e Responsividade */
         .carousel-container { margin-bottom: 35px; width: 100%; overflow: hidden; }
         
         .carousel-title { 
             color: var(--dark); 
-            border-left: 6px solid var(--primary); 
+            border-left: 5px solid var(--primary); 
             padding-left: 15px; 
-            margin-bottom: 20px;
-            font-size: 1.5rem;
+            margin-bottom: 8px;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .carousel-container p {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 15px;
+            padding-left: 20px;
         }
 
         .carousel-track {
             display: flex;
             overflow-x: auto;
-            gap: 15px;
+            gap: 20px;
             padding: 10px 5px 20px 5px;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
         }
 
-        .carousel-track::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        .carousel-track::-webkit-scrollbar { display: none; }
 
         .product-card {
             min-width: 260px;
             max-width: 260px;
             background: var(--white);
-            border-radius: 20px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             text-align: center;
             padding-bottom: 20px;
-            transition: 0.3s;
-            border: 1px solid rgba(255, 133, 162, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(226, 232, 240, 0.8);
             position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
         }
 
         @media (max-width: 480px) {
-            .product-card { min-width: 220px; }
+            .product-card { min-width: 230px; }
         }
 
-        .product-card img { width: 100%; height: 180px; object-fit: cover; }
-        .product-card h3 { font-size: 1.2rem; margin: 15px 10px 5px; }
-        .product-card .price { color: var(--accent); font-weight: 800; font-size: 1.3rem; margin-bottom: 15px; }
+        .product-card img { width: 100%; height: 170px; object-fit: cover; }
+        .product-card h3 { font-size: 1.1rem; margin: 15px 10px 5px; font-weight: 700; }
+        .product-card .price { color: var(--primary); font-weight: 700; font-size: 1.2rem; margin-bottom: 15px; }
         
-        /* Estilo do Texto do ID no Card */
         .product-id-badge {
-            font-size: 0.8rem;
-            color: #888;
+            font-size: 0.75rem;
+            color: #94a3b8;
             margin-top: 5px;
             display: block;
+            font-weight: 600;
         }
 
         .btn-add-item {
-            background: var(--primary);
-            color: white;
+            background: #f1f5f9;
+            color: var(--dark);
             border: none;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s;
         }
 
-        .btn-add-item:active { transform: scale(0.95); }
+        .btn-add-item:hover { background: var(--secondary); }
 
         .btn-save {
             background: var(--dark);
             color: white;
             border: none;
             padding: 10px 25px;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
         }
 
-        button:active { opacity: 0.8; }
-
-        /* Estilo do ícone de edição */
+        /* Ícones de comando suspensos */
         .btn-edit-product {
             position: absolute;
             top: 10px;
-            right: 55px;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
+            right: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(226, 232, 240, 0.8);
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 32px;
+            height: 32px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            font-size: 18px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 14px;
         }
 
-        /* Estilo do ícone da lixeira */
         .btn-delete-product {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(226, 232, 240, 0.8);
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 32px;
+            height: 32px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            font-size: 18px;
-            color: #f44336;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 14px;
+            color: var(--danger);
         }
 
-        /* MODAL FULLSCREEN */
+        /* MODAL FULLSCREEN E SIMULADOS */
         .modal-pdv {
             display: none;
             position: fixed;
@@ -219,7 +256,7 @@
             height: 100%;
             background: var(--white);
             z-index: 9999;
-            padding: 20px;
+            padding: 30px;
             overflow-y: auto;
         }
 
@@ -227,42 +264,70 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--secondary);
+            padding-bottom: 15px;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
         .modal-form {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            max-width: 500px;
+            gap: 15px;
+            max-width: 550px;
             margin: 0 auto;
         }
 
-        .modal-form label { font-weight: bold; }
+        .modal-form label { 
+            font-weight: 600; 
+            font-size: 0.9rem; 
+            color: #475569;
+            margin-bottom: -5px;
+        }
+        
         .modal-form input {
-            padding: 15px;
-            border: 2px solid var(--secondary);
-            border-radius: 10px;
-            font-size: 1rem;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            font-family: inherit;
+            background: var(--light-bg);
+        }
+        
+        .modal-form input:focus {
+            border-color: var(--primary);
+            background: var(--white);
         }
 
         .btn-modal-save {
-            background: var(--accent);
+            background: var(--primary);
             color: white;
-            padding: 15px;
+            padding: 14px;
             border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 1.1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
         }
+        
+        .btn-modal-save:hover { background: var(--primary-dark); }
 
         .btn-modal-close {
-            background: #eee;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #475569;
         }
 
         /* Estilo dos Botões de Backup no Rodapé */
@@ -270,95 +335,115 @@
             margin-top: 50px;
             padding: 20px;
             background: var(--white);
-            border-radius: 15px;
+            border-radius: 12px;
             text-align: center;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        
+        .backup-controls h3 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
         }
 
         .btn-backup {
             padding: 10px 20px;
             margin: 5px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
-        .btn-export { background: #2196f3; color: white; }
-        .btn-import { background: #607d8b; color: white; }
+        .btn-export { background: #e0f2fe; color: #0369a1; }
+        .btn-import { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
 
-        /*🔒🔒🔒TRAVA PARA QUALQUER SITE🔒🔒🔒*/
-        #bloqueio-seguranca {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #0f172a;
+        /* Estilos dos cards simulados de opções */
+        .metodo-card {
+            background: var(--white);
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 16px;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            z-index: 999999;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            padding: 20px;
-            box-sizing: border-box;
         }
-        .modal-autenticacao {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            width: 100%;
-            max-width: 340px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-        .modal-autenticacao h2 {
-            margin: 0 0 10px 0;
-            font-size: 20px;
-            color: #1e293b;
-            font-weight: 700;
-        }
-        .modal-autenticacao p {
-            font-size: 13px;
-            color: #64748b;
-            margin-bottom: 20px;
-        }
-        .campo-autenticacao {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 14px;
-            box-sizing: border-box;
-            outline: none;
-            background-color: #f8fafc;
-        }
-        .campo-autenticacao:focus {
-            border-color: #3b82f6;
-        }
-        .btn-acessar {
-            width: 100%;
-            background-color: #3b82f6;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .btn-acessar:hover {
-            background-color: #2563eb;
-        }
-        .msg-erro {
-            color: #dc2626;
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 10px;
-            display: none;
-        }
+    
+    /* Layout adaptativo para a seção 300-399 (Cards um abaixo do outro) */
+.list-layout-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 0 10px;
+    width: 100%;
+}
+
+/* Novo layout de card horizontal estilizado conforme a imagem */
+.product-card-horizontal {
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    position: relative;
+    width: 100%;
+    gap: 15px;
+    text-align: left;
+}
+
+.product-card-horizontal img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.product-card-horizontal .info-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.product-card-horizontal h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #4a373b;
+}
+
+.product-card-horizontal .price-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 2px;
+}
+
+.product-card-horizontal .price-label {
+    color: #2a9d8f;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.product-card-horizontal .btn-horizontal-choose {
+    background: #fbc4ab;
+    color: #5c3d46;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.product-card-horizontal .btn-horizontal-choose:active {
+    transform: scale(0.95);
+}
+
     </style>
 </head>
 <body>
@@ -366,26 +451,26 @@
     <div class="header-controls">
         <div>
             <span id="statusLabel" class="status-badge status-open">LOJA ABERTA</span>
-            <button onclick="toggleStatus()" style="background: none; border: 1px solid #ccc; border-radius: 5px; cursor: pointer; padding: 5px 10px; margin-left: 5px;">Mudar</button>
+            <button onclick="toggleStatus()" style="background: none; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; padding: 6px 12px; margin-left: 8px; font-weight: 600; font-size: 0.85rem;">Mudar Status</button>
         </div>
 
         <form id="timeForm" class="time-editor">
-            <div style="display:flex; align-items:center; gap:5px">
+            <div class="time-group">
                 <label>Abre:</label>
                 <input type="time" id="openTime" name="openTime" value="08:00">
             </div>
-            <div style="display:flex; align-items:center; gap:5px">
+            <div class="time-group">
                 <label>Fecha:</label>
                 <input type="time" id="closeTime" name="closeTime" value="18:00">
             </div>
-            <button type="submit" class="btn-save">Salvar</button>
+            <button type="submit" class="btn-save">Salvar Horário</button>
         </form>
     </div>
 
-    <div class="header-controls" style="margin-top: -10px; background: #fff5f6; border: 2px dashed var(--primary); justify-content: center; gap: 20px;">
-        <span style="font-weight: bold; color: var(--dark);">📍 Botão de Localização no Site:</span>
-        <button onclick="gerenciarLocalizacao('CRIAR')" style="background: #4caf50; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(76,175,80,0.2);">🟢 Fazemos entregas (ATIVAR)</button>
-        <button onclick="gerenciarLocalizacao('EXCLUIR')" style="background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(244,67,54,0.2);">🔴 Entregas somente uber</button>
+    <div class="header-controls" style="margin-top: -10px; background: #f0f9ff; border: 1px dashed #bae6fd; justify-content: center; gap: 20px;">
+        <span style="font-weight: 600; color: var(--dark); font-size: 0.95rem;">📍 Configuração de Distribuição Regional:</span>
+        <button onclick="gerenciarLocalizacao('CRIAR')" style="background: var(--success); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 8px rgba(16,185,129,0.2);">🟢 Logística Própria (ATIVAR)</button>
+        <button onclick="gerenciarLocalizacao('EXCLUIR')" style="background: var(--danger); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 8px rgba(239,68,68,0.2);">🔴 Entrega por Aplicativo Terceirizado</button>
     </div>
 
     <div id="modalProduto" class="modal-pdv">
@@ -400,16 +485,15 @@
             <label>URL da Imagem:</label>
             <input type="text" id="imgUrl" placeholder="https://linkdaimagem.com/foto.jpg" required>
 
-            <label>Nome do Bolo:</label>
+            <label>Nome do Item:</label>
             <input type="text" id="productName" placeholder="Ex: Bolo de Brigadeiro" required>
 
-            <label>Valor:</label>
+            <label>Valor base:</label>
             <input type="text" id="productValue" placeholder="Ex: R$ 50,00" required>
 
             <button type="submit" class="btn-modal-save">Salvar Produto na Planilha</button>
         </form>
     </div>
-    
     
     <div id="modalProduto300" class="modal-pdv">
         <div class="modal-header">
@@ -426,31 +510,30 @@
             <label>Nome do Produto:</label>
             <input type="text" id="productName300" placeholder="Ex: Bolo de Cenoura Especial" required>
 
-            <label>Valor:</label>
+            <label>Valor base:</label>
             <input type="text" id="productValue300" placeholder="Ex: R$ 50,00" required>
 
             <label>Ingredientes:</label>
             <input type="text" id="productIngredients300" placeholder="Ex: Trigo, Ovos, Leite..." required>
            
-            <label>Campo Coluna H:</label>
-            <input type="text" id="colunaH" data-coluna="H" placeholder="Texto para coluna H">
+            <label>Texto 1:</label>
+            <input type="text" id="colunaH" data-coluna="H" placeholder="Ex: Inteiro / Grande">
 
-            <label>Campo Coluna I:</label>
-            <input type="text" id="colunaI" data-coluna="I" placeholder="Texto para coluna I">
+            <label>Valor 1:</label>
+            <input type="text" id="colunaI" data-coluna="I" placeholder="Ex: R$ 12,50">
 
-            <div id="containerCamposDinamicos" style="display: flex; flex-direction: column; gap: 20px;"></div>
+            <div id="containerCamposDinamicos" style="display: flex; flex-direction: column; gap: 15px;"></div>
 
             <div style="display: flex; justify-content: center; margin-top: 10px;">
-                <button type="button" onclick="adicionarMaisCampos()" style="background: #4caf50; color: white; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(76,175,80,0.3); font-weight: bold;">+</button>
+                <button type="button" onclick="adicionarMaisCampos()" style="background: var(--primary); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37,99,235,0.2); font-weight: bold;">+</button>
             </div>
 
             <button type="submit" class="btn-modal-save" style="margin-top: 20px;">Salvar Produto na Planilha</button>
         </form>
     </div>
 
-
     <div id="pdv-content">
-        <a href="Hospedagem-img.html" target="_blank" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #ffffff; text-decoration: none; font-family: sans-serif; font-size: 16px; font-weight: bold; border-radius: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.2s;">
+        <a href="Hospedagem-img.html" target="_blank" style="display: inline-block; padding: 12px 24px; background-color: var(--dark); color: #ffffff; text-decoration: none; font-family: sans-serif; font-size: 14px; font-weight: 600; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: background-color 0.2s; margin-bottom: 15px;">
             Hospedar Imagem
         </a>
 
@@ -477,10 +560,11 @@
         </section>
         
         <section class="carousel-container">
-            <h2 class="carousel-title">Nossas Variedades</h2>
-            <p>Contagens dos Produtos: 300 até 399</p>
-            <div class="carousel-track" id="carousel4"></div>
+        <h2 class="carousel-title">Nossas Variedades</h2>
+        <p>Contagens dos Produtos: 300 até 399</p>
+        <div class="list-layout-vertical" id="carousel4"></div>
         </section>
+
     </div>
 
     <div class="backup-controls">
@@ -488,6 +572,29 @@
         <button class="btn-backup btn-export" onclick="exportarDados()">Exportar Arquivo (Backup)</button>
         <button class="btn-backup btn-import" onclick="document.getElementById('fileInput').click()">Importar Arquivo</button>
         <input type="file" id="fileInput" style="display:none" onchange="importarDados(event)" accept=".json">
+    </div>
+    
+    <div id="modalSimuladoOpcoes" class="modal-pdv" style="background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100000;">
+        <div style="background: var(--white); padding: 25px; border-radius: 16px; width: 90%; max-width: 400px; text-align: center; position: relative; font-family: inherit; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+            <span onclick="fecharSimularModalOpcoes()" style="position: absolute; top: 15px; right: 20px; font-weight: bold; cursor: pointer; color: #64748b; font-size: 1.1rem;">X</span>
+            <img id="simuladoModalImg" src="" style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px; margin-bottom: 15px;">
+            <h2 id="simuladoModalTitle" style="color: var(--dark); font-size: 1.4rem; margin: 5px 0; font-weight: 700;"></h2>
+            <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 8px; font-weight: 600;">Clique para ver os:</p>
+            <button id="btnSimuladoIngredientes" style="background: #eff6ff; color: var(--primary); border: none; padding: 10px 24px; border-radius: 20px; font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-bottom: 20px; border: 1px solid #dbeafe;">✨ Ingredientes</button>
+            
+            <div id="simuladoOpcoesLista" style="display: flex; flex-direction: column; gap: 10px; text-align: left; margin-bottom: 20px; max-height: 200px; overflow-y: auto; padding-right: 4px;">
+            </div>
+            <button class="btn-modal-save" style="width: 100%; border-radius: 8px; margin-top: 0;" onclick="fecharSimularModalOpcoes()">Confirmar e Adicionar</button>
+        </div>
+    </div>
+
+    <div id="modalSimuladoIngredientes" class="modal-pdv" style="background: rgba(15,23,42,0.7); backdrop-filter: blur(4px); align-items: center; justify-content: center; display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100001;">
+        <div style="background: var(--white); padding: 25px; border-radius: 16px; width: 90%; max-width: 400px; text-align: center; font-family: inherit; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+            <img id="ingredientesModalImg" src="" style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px; margin-bottom: 15px;">
+            <h2 id="ingredientesModalTitle" style="color: var(--dark); font-size: 1.4rem; font-weight: 700;"></h2>
+            <p id="ingredientesModalDesc" style="color: #475569; font-size: 0.95rem; margin: 15px 0 25px; line-height: 1.5; text-align: left; background: var(--light-bg); padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;"></p>
+            <button class="btn-modal-save" style="background: var(--primary); width: 100%; border-radius: 8px; margin-top: 0;" onclick="fecharSimularModalIngredientes()">Ok</button>
+        </div>
     </div>
 
     <script>
@@ -518,16 +625,15 @@
             }
         }
 
-        // Função para ativar/desativar o botão de localização enviando para o Forms
         function gerenciarLocalizacao(acao) {
             const formData = new FormData();
-            formData.append('entry.1866112254', '10'); // ID Fixo da configuração de localização
+            formData.append('entry.1866112254', '10');
             
             if (acao === 'CRIAR') {
-                formData.append('entry.1807921197', 'BOTAO-ATIVO-OK'); // Escreve o termo na coluna de Nome
+                formData.append('entry.1807921197', 'BOTAO-ATIVO-OK');
                 formData.append('entry.1560909282', 'CRIAR');
             } else {
-                formData.append('entry.1560909282', 'EXCLUIR'); // Manda o script da planilha apagar a linha 9001
+                formData.append('entry.1560909282', 'EXCLUIR');
             }
 
             fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData })
@@ -542,18 +648,39 @@
         }
 
         function createCardHTML(id, nome, preco, img) {
-            return `
-                <div class="product-card" id="card-prod-${id}">
-                    <button class="btn-edit-product" onclick="abrirModalEditar(${id}, '${nome}', '${preco}', '${img}')">✏️</button>
-                    <button class="btn-delete-product" onclick="excluirProduto(${id})">🗑️</button>
-                    <img src="${img}" alt="${nome}" loading="lazy">
-                    <span class="product-id-badge">ID: ${id}</span>
+    // Se for da faixa de 300 a 399, renderiza no formato de lista horizontal idêntico à imagem enviada
+    if (id >= 300 && id <= 399) {
+        return `
+            <div class="product-card-horizontal" id="card-prod-${id}">
+                <button class="btn-edit-product" onclick="abrirModalEditar(${id}, '${nome}', '${preco}', '${img}')" style="top: 10px; right: 50px;">✏️</button>
+                <button class="btn-delete-product" onclick="excluirProduto(${id})" style="top: 10px; right: 10px;">🗑️</button>
+                <img src="${img}" alt="${nome}" loading="lazy">
+                <div class="info-box">
+                    <span class="product-id-badge" style="margin-top: 0; margin-bottom: 2px; text-align: left;">ID: ${id}</span>
                     <h3>${nome}</h3>
-                    <p class="price">${preco}</p>
-                    <button class="btn-add-item">Adicionar</button>
+                    <div class="price-container">
+                        <span class="price-label">${preco}</span>
+                        <button class="btn-horizontal-choose" onclick="simularModalOpcoes(${id})">Escolher</button>
+                    </div>
                 </div>
-            `;
-        }
+            </div>
+        `;
+    }
+
+    // Comportamento padrão de bloco vertical para os demais carrosséis (100, 200, 2000)
+    return `
+        <div class="product-card" id="card-prod-${id}">
+            <button class="btn-edit-product" onclick="abrirModalEditar(${id}, '${nome}', '${preco}', '${img}')">✏️</button>
+            <button class="btn-delete-product" onclick="excluirProduto(${id})">🗑️</button>
+            <img src="${img}" alt="${nome}" loading="lazy">
+            <span class="product-id-badge">ID: ${id}</span>
+            <h3>${nome}</h3>
+            <p class="price">${preco}</p>
+            <button class="btn-add-item">Adicionar</button>
+        </div>
+    `;
+}
+
 
         function renderizarTodosCarrosseis() {
             const track1 = document.getElementById('carousel1');
@@ -596,15 +723,68 @@
         function abrirModalEditar(id, nome, preco, img) {
             originalId = id; 
             
-            // Se o ID for entre 300 e 399, redireciona para o modal especial 300
             if (id >= 300 && id <= 399) {
                 document.getElementById('editId300').value = id;
                 document.getElementById('imgUrl300').value = img;
                 document.getElementById('productName300').value = nome;
                 document.getElementById('productValue300').value = preco;
+                
+                const produtoSalvo = listaProdutos.find(p => p.id === id);
+                
+                document.getElementById('containerCamposDinamicos').innerHTML = '';
+                proximaLetraAscii = 74; 
+
+                if (produtoSalvo) {
+                    document.getElementById('productIngredients300').value = produtoSalvo.ingredientes || "";
+                    document.getElementById('colunaH').value = produtoSalvo.colunaH || "";
+                    document.getElementById('colunaI').value = produtoSalvo.colunaI || "";
+                    
+                    if (produtoSalvo.dinamicos && produtoSalvo.dinamicos.length > 0) {
+                        const container = document.getElementById('containerCamposDinamicos');
+                        let contadorOrdem = 2;
+                        
+                        for (let i = 0; i < produtoSalvo.dinamicos.length; i += 2) {
+                            const campoTexto = produtoSalvo.dinamicos[i];
+                            const campoValor = produtoSalvo.dinamicos[i + 1];
+
+                            if (campoTexto) {
+                                const lblT = document.createElement('label');
+                                lblT.innerText = `Texto ${contadorOrdem}:`;
+                                const inpT = document.createElement('input');
+                                inpT.type = 'text';
+                                inpT.setAttribute('data-coluna', campoTexto.coluna);
+                                inpT.value = campoTexto.valor;
+                                inpT.placeholder = `Texto para coluna ${campoTexto.coluna}`;
+                                container.appendChild(lblT);
+                                container.appendChild(inpT);
+                            }
+
+                            if (campoValor) {
+                                const lblV = document.createElement('label');
+                                lblV.innerText = `Valor ${contadorOrdem}:`;
+                                const inpV = document.createElement('input');
+                                inpV.type = 'text';
+                                inpV.setAttribute('data-coluna', campoValor.coluna);
+                                inpV.value = campoValor.valor;
+                                inpV.placeholder = `Texto para coluna ${campoValor.coluna}`;
+                                container.appendChild(lblV);
+                                container.appendChild(inpV);
+                            }
+                            
+                            contadorOrdem++;
+                        }
+                        
+                        const ultimoCampo = produtoSalvo.dinamicos[produtoSalvo.dinamicos.length - 1];
+                        proximaLetraAscii = ultimoCampo.coluna.charCodeAt(0) + 1;
+                    }
+                } else {
+                    document.getElementById('productIngredients300').value = "";
+                    document.getElementById('colunaH').value = "";
+                    document.getElementById('colunaI').value = "";
+                }
+                
                 document.getElementById('modalProduto300').style.display = 'block';
             } else {
-                // Caso contrário, abre o modal padrão
                 document.getElementById('modalTitle').innerText = "Editar Produto";
                 document.getElementById('editId').value = id;
                 document.getElementById('imgUrl').value = img;
@@ -618,33 +798,22 @@
             document.getElementById('modalProduto').style.display = 'none';
         }
 
+        function fecharModal300() {
+            document.getElementById('modalProduto300').style.display = 'none';
+        }
+
         function excluirProduto(id) {
             if(confirm("Deseja realmente excluir o produto ID " + id + "?")) {
+                const formData = new FormData();
+                formData.append('entry.1866112254', id);
+                formData.append('entry.1560909282', 'EXCLUIR');
                 
-                if (id >= 300 && id <= 399) {
-                    const formData = new FormData();
-                    
-                    formData.append('entry.1866112254', id);        // ID do produto a ser apagado
-                    formData.append('entry.1560909282', 'EXCLUIR');  // Comando de exclusão na coluna correta
-                    
-                    fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData }).then(() => {
-                        alert("Solicitação de exclusão enviada para a planilha via Google Forms!");
-                        listaProdutos = listaProdutos.filter(p => p.id !== id);
-                        salvarLocal();
-                        renderizarTodosCarrosseis();
-                    });
-                } else {
-                    // Comportamento padrão antigo para os outros produtos via Google Forms original
-                    const formData = new FormData();
-                    formData.append('entry.1866112254', id);
-                    formData.append('entry.1560909282', 'EXCLUIR');
-                    fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData }).then(() => {
-                        alert("Solicitação de exclusão enviada!");
-                        listaProdutos = listaProdutos.filter(p => p.id !== id);
-                        salvarLocal();
-                        renderizarTodosCarrosseis();
-                    });
-                }
+                fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData }).then(() => {
+                    alert("Solicitação de exclusão enviada para a planilha via Google Forms!");
+                    listaProdutos = listaProdutos.filter(p => p.id !== id);
+                    salvarLocal();
+                    renderizarTodosCarrosseis();
+                });
             }
         }
 
@@ -712,67 +881,70 @@
     
         // --- Lógica para o Modal 300 a 399 e Campos Dinâmicos ---
         let timeoutId = null;
-        let proximaLetraAscii = 74; // Código ASCII para 'J'
+        let proximaLetraAscii = 74; 
 
-        // Detecta quando digita no ID do primeiro modal
         document.getElementById('editId').addEventListener('input', function() {
             clearTimeout(timeoutId);
             const valor = parseInt(this.value);
 
             if (valor >= 300 && valor <= 399) {
                 timeoutId = setTimeout(() => {
-                    fecharModal(); // Fecha o modal padrão
-                    abrirModal300(valor); // Abre o novo modal carregando o ID digitado
-                }, 10000); // 10 segundos
+                    fecharModal(); 
+                    abrirModal300(valor); 
+                }, 10000); 
             }
         });
 
         function abrirModal300(idPreenchido) {
             document.getElementById('productForm300').reset();
             document.getElementById('containerCamposDinamicos').innerHTML = '';
-            proximaLetraAscii = 74; // Reinicia no J
+            proximaLetraAscii = 74; 
             
             document.getElementById('editId300').value = idPreenchido;
             document.getElementById('modalProduto300').style.display = 'block';
         }
 
-        function fecharModal300() {
-            document.getElementById('modalProduto300').style.display = 'none';
-        }
-
-        // Cria dinamicamente 2 campos mapeando as colunas subsequentes (J, K, L, M...) até o Z
         function adicionarMaisCampos() {
-            if (proximaLetraAscii > 90) { // 90 é o código do 'Z'
+            if (proximaLetraAscii > 90) { 
                 alert("Limite de colunas (Z) atingido!");
                 return;
             }
 
             const container = document.getElementById('containerCamposDinamicos');
+            // Calcula a numeração atual baseado na quantidade de inputs existentes dividida por 2 + o par inicial (H/I)
+            const inputsExistentes = container.querySelectorAll('input').length;
+            const proximoNumeroSequencia = Math.floor(inputsExistentes / 2) + 2;
 
-            for (let i = 0; i < 2; i++) {
-                if (proximaLetraAscii <= 90) {
-                    const letra = String.fromCharCode(proximaLetraAscii);
-                    
-                    const label = document.createElement('label');
-                    label.innerText = `Campo Coluna ${letra}:`;
-                    
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.setAttribute('data-coluna', letra);
-                    input.placeholder = `Texto para coluna ${letra}`;
+            if (proximaLetraAscii <= 90) {
+                const letraTexto = String.fromCharCode(proximaLetraAscii);
+                const labelT = document.createElement('label');
+                labelT.innerText = `Texto ${proximoNumeroSequencia}:`;
+                const inputT = document.createElement('input');
+                inputT.type = 'text';
+                inputT.setAttribute('data-coluna', letraTexto);
+                inputT.placeholder = `Texto para coluna ${letraTexto}`;
+                container.appendChild(labelT);
+                container.appendChild(inputT);
+                proximaLetraAscii++;
+            }
 
-                    container.appendChild(label);
-                    container.appendChild(input);
-                    
-                    proximaLetraAscii++;
-                }
+            if (proximaLetraAscii <= 90) {
+                const letraValor = String.fromCharCode(proximaLetraAscii);
+                const labelV = document.createElement('label');
+                labelV.innerText = `Valor ${proximoNumeroSequencia}:`;
+                const inputV = document.createElement('input');
+                inputV.type = 'text';
+                inputV.setAttribute('data-coluna', letraValor);
+                inputV.placeholder = `Texto para coluna ${letraValor}`;
+                container.appendChild(labelV);
+                container.appendChild(inputV);
+                proximaLetraAscii++;
             }
         }
 
         document.getElementById('productForm300').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Agora usa a MESMA URL que os outros produtos para enviar ao mesmo formulário
             const FORM_URL_PRODUTOS = FORM_URL;
 
             const id = parseInt(document.getElementById('editId300').value);
@@ -783,21 +955,18 @@
 
             const formData = new FormData();
             
-            // Mapeamento dos Entrys atualizados conforme os novos dados fornecidos por você
-            formData.append('entry.1866112254', id);                             // ID do Produto
-            formData.append('entry.1956330986', img);                            // URL da Imagem
-            formData.append('entry.872882549', preco);                          // Valor do produto
-            formData.append('entry.1807921197', nome);                           // Nome do Produto
-            formData.append('entry.1560909282', originalId ? 'EDITAR' : 'CRIAR'); // Ação (EDITAR/CRIAR)
-            formData.append('entry.1259153024', ingredientes);                    // Ingredientes
+            formData.append('entry.1866112254', id);                             
+            formData.append('entry.1956330986', img);                            
+            formData.append('entry.872882549', preco);                          
+            formData.append('entry.1807921197', nome);                           
+            formData.append('entry.1560909282', originalId ? 'EDITAR' : 'CRIAR'); 
+            formData.append('entry.1259153024', ingredientes);                    
             
-            // Campos fixos H e I mapeados com os novos entrys corretos
             const txtH = document.getElementById('colunaH').value;
             const txtI = document.getElementById('colunaI').value;
-            formData.append('entry.624045744', txtH);                            // Campo Coluna H
-            formData.append('entry.1481139913', txtI);                           // Campo Coluna I
+            formData.append('entry.624045744', txtH);                            
+            formData.append('entry.1481139913', txtI);                           
 
-            // Mapeamento dinâmico reestruturado do J ao Z com as suas novas chaves fornecidas
             const entrysDinamicos = {
                 'J': 'entry.1184409737', 'K': 'entry.1033348781', 
                 'M': 'entry.430871606',  'N': 'entry.274630899',  'O': 'entry.1414667702',
@@ -807,7 +976,6 @@
                 'Y': 'entry.176043004',  'Z': 'entry.1289918465'
             };
 
-            // Pega apenas os campos criados dinamicamente para não conflitar com H e I
             const camposDinamicos = document.getElementById('containerCamposDinamicos').querySelectorAll('[data-coluna]');
             camposDinamicos.forEach(campo => {
                 const letra = campo.getAttribute('data-coluna');
@@ -816,7 +984,6 @@
                 }
             });
 
-            // Envia via POST diretamente para o seu formulário ativo
             fetch(FORM_URL_PRODUTOS, { method: 'POST', mode: 'no-cors', body: formData })
             .then(() => {
                 alert("Dados enviados com sucesso para o Google Forms!");
@@ -825,7 +992,19 @@
                     listaProdutos = listaProdutos.filter(p => p.id !== originalId);
                 }
                 
-                listaProdutos.push({ id, nome, preco, img });
+                const adicionaisSalvar = {
+                    ingredientes: ingredientes,
+                    colunaH: txtH,
+                    colunaI: txtI,
+                    dinamicos: []
+                };
+
+                camposDinamicos.forEach(campo => {
+                    const letra = campo.getAttribute('data-coluna');
+                    adicionaisSalvar.dinamicos.push({ coluna: letra, valor: campo.value });
+                });
+                
+                listaProdutos.push({ id, nome, preco, img, ...adicionaisSalvar });
                 salvarLocal();
                 renderizarTodosCarrosseis();
                 fecharModal300();
@@ -833,6 +1012,71 @@
             .catch(err => alert('Erro ao enviar dados para o Google Forms: ' + err));
         });
             
+        // --- Lógica para os Modais Simulados da faixa 300-399 ---
+        let nomeProdutoAtual = "";
+        let imgProdutoAtual = "";
+
+        function simularModalOpcoes(id) {
+            const prodCompleto = listaProdutos.find(p => p.id === id);
+            if (!prodCompleto) return;
+
+            nomeProdutoAtual = prodCompleto.nome;
+            imgProdutoAtual = prodCompleto.img;
+            
+            document.getElementById('simuladoModalImg').src = prodCompleto.img;
+            document.getElementById('simuladoModalTitle').innerText = prodCompleto.nome;
+            
+            const containerLista = document.getElementById('simuladoOpcoesLista');
+            containerLista.innerHTML = '';
+
+            // Adiciona o par principal (H e I) se estiver preenchido
+            if (prodCompleto.colunaH && prodCompleto.colunaI) {
+                containerLista.innerHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; background: var(--light-bg);">
+                        <span style="font-weight: 600; font-size: 0.95rem;">${prodCompleto.colunaH}</span>
+                        <span style="color: var(--primary); font-weight: 700; font-size: 0.95rem;">${prodCompleto.colunaI}</span>
+                    </div>
+                `;
+            }
+
+            // Agrupa e renderiza os pares ordenados dinâmicos (Texto / Valor) na lista de opções
+            if (prodCompleto.dinamicos && prodCompleto.dinamicos.length > 0) {
+                for (let i = 0; i < prodCompleto.dinamicos.length; i += 2) {
+                    const txtObj = prodCompleto.dinamicos[i];
+                    const valObj = prodCompleto.dinamicos[i + 1];
+                    if (txtObj && valObj && txtObj.valor && valObj.valor) {
+                        containerLista.innerHTML += `
+                            <div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; background: var(--light-bg);">
+                                <span style="font-weight: 600; font-size: 0.95rem;">${txtObj.valor}</span>
+                                <span style="color: var(--primary); font-weight: 700; font-size: 0.95rem;">${valObj.valor}</span>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            if (containerLista.innerHTML === '') {
+                containerLista.innerHTML = `<p style="font-size: 0.9rem; color: #64748b; text-align: center; padding: 10px;">Nenhuma opção cadastrada.</p>`;
+            }
+            
+            document.getElementById('btnSimuladoIngredientes').onclick = function() {
+                document.getElementById('ingredientesModalImg').src = imgProdutoAtual;
+                document.getElementById('ingredientesModalTitle').innerText = nomeProdutoAtual;
+                document.getElementById('ingredientesModalDesc').innerText = prodCompleto.ingredientes ? prodCompleto.ingredientes : "Ingredientes não informados.";
+                
+                document.getElementById('modalSimuladoIngredientes').style.display = 'flex';
+            };
+
+            document.getElementById('modalSimuladoOpcoes').style.display = 'flex';
+        }
+
+        function fecharSimularModalOpcoes() {
+            document.getElementById('modalSimuladoOpcoes').style.display = 'none';
+        }
+
+        function fecharSimularModalIngredientes() {
+            document.getElementById('modalSimuladoIngredientes').style.display = 'none';
+        }
     </script>
 </body>
 </html>
