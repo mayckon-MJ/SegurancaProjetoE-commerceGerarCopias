@@ -443,10 +443,181 @@
 .product-card-horizontal .btn-horizontal-choose:active {
     transform: scale(0.95);
 }
+    
+    
+    
+ /* Container do Perfil no Topo */
+.profile-top-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.profile-avatar-wrapper {
+    position: relative;
+    width: 130px;
+    height: 130px;
+}
+
+.profile-avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.btn-edit-avatar {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+
+.btn-edit-avatar:hover { transform: scale(1.1); }
+
+/* Área do Input de Link e Botão Alterar */
+.profile-input-box {
+    display: none; /* Inicia escondido, aparece ao clicar no lápis */
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 320px;
+    background: var(--white);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border: 1px solid var(--secondary);
+}
+
+.profile-input-box input {
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.btn-profile-change {
+    background: var(--success);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+    
+/* Container Geral do Topo (Capa + Perfil) */
+.header-banner-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 75px; /* Espaço para o perfil que fica pendurado para fora */
+}
+
+/* Foto de Capa */
+.cover-container {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    background: #cbd5e1;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.cover-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Botão do Lápis da Capa (Canto Direito Superior) */
+.btn-edit-cover {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+    z-index: 10;
+}
+
+.btn-edit-cover:hover { transform: scale(1.1); }
+
+/* Ajuste posicional do Perfil existente para sobrepor a Capa */
+.profile-top-container {
+    position: absolute;
+    bottom: -65px; /* Empurra o perfil para começar do meio da capa */
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0 !important;
+    z-index: 5;
+}
+
 
     </style>
 </head>
 <body>
+       <div class="header-banner-wrapper">
+        <div class="cover-container">
+            <img id="topCoverImg" src="https://i.ibb.co/r2JSPLGR/114301.png" alt="Foto de Capa">
+            <button class="btn-edit-cover" onclick="abrirModalCapa()" title="Mudar capa">✏️</button>
+        </div>
+
+        <div class="profile-top-container">
+            <div class="profile-avatar-wrapper">
+                <img id="topProfileImg" src="https://i.ibb.co/9H2DwS46/114125.png" alt="Foto de Perfil">
+                <button class="btn-edit-avatar" onclick="toggleInputPerfil()" title="Mudar foto">✏️</button>
+            </div>
+            
+            <div id="profileInputBox" class="profile-input-box">
+                <input style="font-size:3px;" type="text" id="newProfileUrl" placeholder="Cole o link do perfil aqui...">
+                <button class="btn-profile-change" onclick="enviarPerfilPlanilha()">Alterar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalCapaSite" class="modal-pdv" style="background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100005;">
+        <div style="background: var(--white); padding: 25px; border-radius: 16px; width: 90%; max-width: 450px; font-family: inherit; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+            <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 20px;">
+                <h3 style="font-weight: 700; font-size: 1.2rem;">Alterar Imagem de Capa</h3>
+                <span onclick="fecharModalCapa()" style="font-weight: bold; cursor: pointer; color: #64748b; font-size: 1.1rem;">X</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <label style="font-weight: 600; font-size: 0.9rem; color: #475569;">Link da Imagem da Capa:</label>
+                <input type="text" id="newCoverUrl" placeholder="Ex.: https://linkdaimagem.com/capa.jpg" style="padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.7rem; outline: none;">
+                <button class="btn-modal-save" style="width: 100%; border-radius: 8px; margin-top: 10px;" onclick="enviarCapaPlanilha()">Alterar</button>
+            </div>
+        </div>
+    </div>
+
+ 
     
     <div class="header-controls">
         <div>
@@ -548,7 +719,23 @@
         </section>
 
         <section class="carousel-container">
-            <h2 class="carousel-title">Nossos Bombons</h2>
+        <h2 class="carousel-title" style="display: flex; align-items: center; gap: 10px;">
+        Bebidas 
+        <button onclick="abrirModalBebidas()" style="background:none; border:none; cursor:pointer; font-size:1.2rem;" title="Editar Categoria">✏️</button>
+        </h2>
+<div id="modalBebidas" class="modal-pdv" style="background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100006;">
+    <div style="background: var(--white); padding: 25px; border-radius: 16px; width: 90%; max-width: 450px; font-family: inherit; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+        <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 20px;">
+            <h3 style="font-weight: 700; font-size: 1.2rem;">Alterar Nome da Categoria</h3>
+            <span onclick="fecharModalBebidas()" style="font-weight: bold; cursor: pointer; color: #64748b; font-size: 1.1rem;">X</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <label style="font-weight: 600; font-size: 0.9rem; color: #475569;">Nome da Categoria:</label>
+            <input type="text" id="novoNomeBebidas" value="Bebidas" style="padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; outline: none;">
+            <button class="btn-modal-save" style="width: 100%; border-radius: 8px; margin-top: 10px;" onclick="enviarBebidasPlanilha()">Alterar</button>
+        </div>
+    </div>
+</div>
             <p>Contagens dos Produtos: 100 até 199</p>
             <div class="carousel-track" id="carousel2"></div>
         </section>
@@ -559,8 +746,24 @@
             <div class="carousel-track" id="carousel3"></div>
         </section>
         
-        <section class="carousel-container">
-        <h2 class="carousel-title">Nossas Variedades</h2>
+        <section class="carousel-container">     
+<h2 class="carousel-title" style="display: flex; align-items: center; gap: 10px;">
+    Nossas Variedades 
+    <button onclick="abrirModalVariedades()" style="background:none; border:none; cursor:pointer; font-size:1.2rem;" title="Editar Categoria">✏️</button>
+</h2>
+<div id="modalVariedades" class="modal-pdv" style="background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100007;">
+    <div style="background: var(--white); padding: 25px; border-radius: 16px; width: 90%; max-width: 450px; font-family: inherit; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+        <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 20px;">
+            <h3 style="font-weight: 700; font-size: 1.2rem;">Alterar Nome da Categoria</h3>
+            <span onclick="fecharModalVariedades()" style="font-weight: bold; cursor: pointer; color: #64748b; font-size: 1.1rem;">X</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <label style="font-weight: 600; font-size: 0.9rem; color: #475569;">Nome da Categoria:</label>
+            <input type="text" id="novoNomeVariedades" value="Nossas Variedades" style="padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; outline: none;">
+            <button class="btn-modal-save" style="width: 100%; border-radius: 8px; margin-top: 10px;" onclick="enviarVariedadesPlanilha()">Alterar</button>
+        </div>
+    </div>
+</div>
         <p>Contagens dos Produtos: 300 até 399</p>
         <div class="list-layout-vertical" id="carousel4"></div>
         </section>
@@ -1078,6 +1281,139 @@
         function fecharSimularModalIngredientes() {
             document.getElementById('modalSimuladoIngredientes').style.display = 'none';
         }
+    
+    
+    // Abre e fecha o campo de link ao clicar no lápis
+function toggleInputPerfil() {
+    const box = document.getElementById('profileInputBox');
+    box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
+}
+
+// Envia o número 8 (Coluna B), o Link (Coluna C) e "CRIAR" (Coluna F)
+function enviarPerfilPlanilha() {
+    const linkImagem = document.getElementById('newProfileUrl').value.trim();
+    
+    if (!linkImagem) {
+        alert('Por favor, insira o link de uma imagem!');
+        return;
+    }
+
+    const formData = new FormData();
+    
+    // Mapeamento baseado nos campos existentes do seu script:
+    formData.append('entry.1866112254', '8');          // Coluna B (ID) recebe o número 8
+    formData.append('entry.1956330986', linkImagem);   // Coluna C (URL da Imagem) recebe o Link inserido
+    formData.append('entry.1560909282', 'CRIAR');      // Coluna F (Ação) recebe a palavra CRIAR
+
+    // Envio para o Google Forms configurado no seu código
+    fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData })
+        .then(() => {
+            alert('Dados da imagem enviados com sucesso para a planilha!');
+            document.getElementById('topProfileImg').src = linkImagem; // Atualiza a foto na tela na hora
+            document.getElementById('newProfileUrl').value = ''; // Limpa o input
+            document.getElementById('profileInputBox').style.display = 'none'; // Esconde a caixinha
+        })
+        .catch(err => alert('Erro ao enviar dados: ' + err));
+}
+    
+    // Controle do Modal da Capa
+function abrirModalCapa() {
+    document.getElementById('modalCapaSite').style.display = 'flex';
+}
+
+function fecharModalCapa() {
+    document.getElementById('modalCapaSite').style.display = 'none';
+}
+
+// Envia o número 9 (Coluna B), o Link da Capa (Coluna C) e "CRIAR" (Coluna F)
+function enviarCapaPlanilha() {
+    const linkCapa = document.getElementById('newCoverUrl').value.trim();
+    
+    if (!linkCapa) {
+        alert('Por favor, insira o link de uma imagem válida para a capa!');
+        return;
+    }
+
+    const formData = new FormData();
+    
+    formData.append('entry.1866112254', '9');         // Coluna B (ID) recebe o número 9
+    formData.append('entry.1956330986', linkCapa);    // Coluna C (URL da Imagem) recebe o Link da capa
+    formData.append('entry.1560909282', 'CRIAR');     // Coluna F (Ação) recebe a palavra CRIAR
+
+    fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData })
+        .then(() => {
+            alert('Dados da capa enviados com sucesso para a planilha!');
+            document.getElementById('topCoverImg').src = linkCapa; // Atualiza a capa no site instantaneamente
+            document.getElementById('newCoverUrl').value = ''; // Limpa o input
+            fecharModalCapa(); // Fecha o modal
+        })
+        .catch(err => alert('Erro ao processar envio da capa: ' + err));
+}
+
+// Funções para Controle do Modal de Bebidas
+function abrirModalBebidas() {
+    document.getElementById('modalBebidas').style.display = 'flex';
+}
+
+function fecharModalBebidas() {
+    document.getElementById('modalBebidas').style.display = 'none';
+}
+
+// Envia o número 1 (Coluna B), o Texto do Input (Coluna C) e "CRIAR" (Coluna F)
+function enviarBebidasPlanilha() {
+    const textoInput = document.getElementById('novoNomeBebidas').value.trim();
+    
+    if (!textoInput) {
+        alert('Por favor, digite um nome válido!');
+        return;
+    }
+
+    const formData = new FormData();
+    
+    formData.append('entry.1866112254', '1');          // Coluna B (ID) recebe o Número 1
+    formData.append('entry.1956330986', textoInput);   // Coluna C (Texto alterado)
+    formData.append('entry.1560909282', 'CRIAR');      // Coluna F (Ação) recebe CRIAR
+
+    fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData })
+        .then(() => {
+            alert('Categoria atualizada com sucesso na planilha!');
+            fecharModalBebidas();
+        })
+        .catch(err => alert('Erro ao processar envio: ' + err));
+}
+
+ // Funções para Controle do Modal de Nossas Variedades
+function abrirModalVariedades() {
+    document.getElementById('modalVariedades').style.display = 'flex';
+}
+
+function fecharModalVariedades() {
+    document.getElementById('modalVariedades').style.display = 'none';
+}
+
+// Envia o número 2 (Coluna B), o Texto do Input (Coluna C) e "CRIAR" (Coluna F)
+function enviarVariedadesPlanilha() {
+    const textoInput = document.getElementById('novoNomeVariedades').value.trim();
+    
+    if (!textoInput) {
+        alert('Por favor, digite um nome válido!');
+        return;
+    }
+
+    const formData = new FormData();
+    
+    formData.append('entry.1866112254', '2');          // Coluna B (ID) recebe o Número 2
+    formData.append('entry.1956330986', textoInput);   // Coluna C (Texto alterado)
+    formData.append('entry.1560909282', 'CRIAR');      // Coluna F (Ação) recebe CRIAR
+
+    fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData })
+        .then(() => {
+            alert('Categoria atualizada com sucesso na planilha!');
+            fecharModalVariedades();
+        })
+        .catch(err => alert('Erro ao processar envio: ' + err));
+}
+   
     </script>
 </body>
 </html>
